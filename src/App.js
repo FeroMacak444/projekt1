@@ -19,7 +19,7 @@ function App(){
     }, []);
 
   return (
-    <div className='app'> {/*Čo to nejde?!?! (bg-color na celu stranku iba na časť) ----> treba poriešiť*/}
+    <div className='app'>
       <div>{ authUser ? <Homepage/> : <SignIn/>}</div>
     </div>
   );

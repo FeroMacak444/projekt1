@@ -2,6 +2,7 @@
 //import { useAuthState } from 'react-firebase-hooks/auth';
 //import { useCollectionData } from 'react-firebase-hooks/firestore';
 import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
@@ -29,3 +30,5 @@ export const signInWithGoogle = () => {
     console.log(error);
   });
 }
+
+export const db = getFirestore(app);
