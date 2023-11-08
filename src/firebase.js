@@ -3,7 +3,7 @@
 //import { useCollectionData } from 'react-firebase-hooks/firestore';
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { getAnalytics } from "firebase/analytics";
+// import { getAnalytics } from "firebase/analytics";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 const firebaseConfig = {
@@ -13,9 +13,8 @@ const firebaseConfig = {
     storageBucket: "kanban-board-52390.appspot.com",
     messagingSenderId: "497239140528",
     appId: "1:497239140528:web:94bf422d94857dc1837375",
-    measurementId: "G-S5G8F5DPSS"
+    measurementId: "G-S5G8F5DPSS",
   };
-
 
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
@@ -25,7 +24,7 @@ const provider = new GoogleAuthProvider();
 export const signInWithGoogle = () => {
   signInWithPopup(auth, provider)
     .then((result) => {
-    console.log(result);
+      console.log(result);
   }).catch((error) => {
     console.log(error);
   });

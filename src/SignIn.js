@@ -6,7 +6,6 @@ import { signInWithGoogle } from './firebase';
 import 'bootstrap/dist/css/bootstrap.css';
 import {FaGoogle} from 'react-icons/fa';
 
-
 const SignIn = () => {
 
   const [email, setEmail] = useState('');
@@ -19,11 +18,14 @@ const SignIn = () => {
     signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       console.log(userCredential);
+      const emailNaPouzitie2 = userCredential.user.email;
+      localStorage.setItem("email", emailNaPouzitie2);
     })
     .catch((error) => {
       console.log(error);
     })
   };
+
 
   const signUp = (b) => {
     b.preventDefault();
@@ -35,8 +37,6 @@ const SignIn = () => {
       console.log(error);
     })
   };
-
-  
   return (
       <div className="App dark">
         <div className="account-pages mt-5 mb-5">
@@ -46,7 +46,7 @@ const SignIn = () => {
                 <div className="card">
                   <div className="card-body p-4">
                     <div className="text-center mb-4">
-                      <h1>/*Treba Zadať nadpis SEM !!!!*/</h1>
+                      <h1>Treba Zadať nadpis SEM !!!!</h1>
                     </div>
                     <div className="row">
                       <div className="col-lg-6">
