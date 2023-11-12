@@ -1,42 +1,59 @@
-import React from 'react';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import React,{useState, useEffect} from 'react';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged} from "firebase/auth";
 import { auth } from './firebase';
-import { useState } from 'react';
 import { signInWithGoogle } from './firebase';
 import 'bootstrap/dist/css/bootstrap.css';
 import {FaGoogle} from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 const SignIn = () => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [email2, setEmail2] = useState('');
-  const [password2, setPassword2] = useState('');
+  const [registerInformation, setRegisterInformation] = useState({
+    password: '',
+    confirmPassword: ''
+  });
+  const navigate = useNavigate();
 
-  const signIn = (e) => {
-    e.preventDefault();
-    signInWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      console.log(userCredential);
-      const emailNaPouzitie2 = userCredential.user.email;
-      localStorage.setItem("email", emailNaPouzitie2);
+  //LogIn
+  useEffect(() => {
+    auth.onAuthStateChanged((user) => {
+      if(user){
+        navigate('/homepage');
+      }
     })
-    .catch((error) => {
-      console.log(error);
-    })
+  }, []);
+
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+  };
+
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value)
+  };
+
+  const handleSignIn = (a) => {
+    signInWithEmailAndPassword(auth, email, password).then(()=>{
+      localStorage.setItem('email', email);
+      navigate('/homepage');
+    }).catch((error) => alert("Nesprávne meno alebo heslo"));
   };
 
 
-  const signUp = (b) => {
-    b.preventDefault();
-    createUserWithEmailAndPassword(auth, email2, password2)
-    .then((userCredential) => {
-      console.log(userCredential);
-    })
-    .catch((error) => {
-      console.log(error);
-    })
+  ///Create Account
+
+  const handleRegister = (e) => {
+    if(registerInformation.password !== registerInformation.confirmPassword){
+      alert('Heslá sa nezhodujú');
+      return;
+    };
+    createUserWithEmailAndPassword(auth, registerInformation.email, registerInformation.password).then(()=>{
+      localStorage.setItem('email', registerInformation.email);
+      navigate('/homepage');
+    }).catch((error) => alert(error.message));
   };
+
   return (
       <div className="App dark">
         <div className="account-pages mt-5 mb-5">
@@ -54,40 +71,39 @@ const SignIn = () => {
                           {/*Nadpis -> LogIn*/}
                           <h4>Log In</h4>
                           <p className='mb-3'>Zadaj email a heslo na prihlásenie.</p>
-                          <form onSubmit={signIn}>
                             <div className="mb-3">
                               <label htmlFor="emailaddress" className='form-label'>Email address</label>
-                              <input type="email" id='emailaddress' placeholder='Zadaj Email@' className='form-control' value={email} required onChange={(e) => setEmail(e.target.value)}/>
+                              <input type="email" id='emailaddress' placeholder='Zadaj Email@' className='form-control' value={email} required onChange={handleEmailChange}/>
                             </div>
                             <div className="mb-3">
                               <label htmlFor="password" className='form-label'>Password</label>
-                              <input type="password" id='password' placeholder='Zadaj heslo' value={password} className='form-control' required onChange={(e) => setPassword(e.target.value)}/>
+                              <input type="password" id='password' placeholder='Zadaj heslo' value={password} className='form-control' required onChange={handlePasswordChange}/>
                             </div>
                             <div className="mb-3">
-                              <button className='btn btn-dark bg-gradient btn-sm  float-sm-end'>Log In</button>
+                              <button className='btn btn-dark bg-gradient btn-sm  float-sm-end' onClick={handleSignIn}>Log In</button>
                             </div>
-                          </form>
                         </div>
                       </div>
                       <div className="col-lg-6">
                         <div className="p-sm-3">
-                          {/*Nadpis -> SignUp*/}
                           <h4>Sign Up</h4>
                           <p className='mb-3'>Vytvor si účet. Bude to trvať menej ako minútu.</p>
-                          <form onSubmit={signUp}>
                             <div className="mb-3">
                               <label htmlFor="emailaddress2" className='form-label'>Email address</label>
-                              <input type="email" id='emailaddress2' placeholder='Zadaj Email@' className='form-control' value={email2} required onChange={(b) => setEmail2(b.target.value)}/>
+                              <input type="email" id='emailaddress2' placeholder='Zadaj Email@' className='form-control' value={registerInformation.email} onChange={(e) => setRegisterInformation({...registerInformation, email: e.target.value})} required/>
                             </div>
                             <div className="mb-3">
                               <label htmlFor="password2" className='form-label'>Password</label>
-                              <input type="password" id='password2' placeholder='Zadaj heslo' value={password2} className='form-control' required onChange={(b) => setPassword2(b.target.value)}/>
+                              <input type="password" id='password2' placeholder='Zadaj heslo'className='form-control' value={registerInformation.password} onChange={(e) => setRegisterInformation({...registerInformation, password: e.target.value})} required/>
+                            </div>
+                            <div className="mb-3">
+                              <label htmlFor="password2" className='form-label'>Password</label>
+                              <input type="password" id='password3' placeholder='Zadaj heslo'className='form-control' value={registerInformation.confirmPassword} onChange={(e) => setRegisterInformation({...registerInformation, confirmPassword: e.target.value})} required/>
                             </div>
                             <div className="mb-3">
                               <button onClick={ signInWithGoogle } className='btn btn-sm waves-effect waves-light rounded-pill'><FaGoogle/></button>
-                              <button className='btn btn-dark bg-gradient btn-sm float-sm-end'>Sign Up</button>
+                              <button className='btn btn-dark bg-gradient btn-sm float-sm-end' onClick={handleRegister}>Sign Up</button>
                             </div>  
-                          </form>
                         </div>
                       </div>
                     </div>

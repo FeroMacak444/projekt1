@@ -1,95 +1,91 @@
 import React,{ useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import ToDo from './ToDo';
-import { query, collection, onSnapshot, doc, addDoc, deleteDoc } from 'firebase/firestore';
-import{ db } from './firebase';
-import {DndContext, closestCenter} from '@dnd-kit/core';
-import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import{ auth, db } from './firebase';
+import { signOut } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
+import { ImExit } from 'react-icons/im';
+import { uid } from 'uid';
+import { set, ref, onValue, remove, update } from 'firebase/database';
+import {FaTrashCan} from 'react-icons/fa6';
+import {LuMove} from 'react-icons/lu';
+import {FaCheck} from 'react-icons/fa6';
+
 
 function Homepage () {
-  const [Todos, setTodos] = useState([]);
-  const [input, setInput] = useState('');
+  const [todo, setTodo] = useState("");
+  const [todos, setTodos] = useState([]);
 
-    //Create Item
-    const createTodo = async(e) => {
-      e.preventDefault(e);
-      if(input === ''){
-        alert('Please enter a valid ToDo');
-        return;
-      }
-      await addDoc(collection(db, 'todos'), {
-        text: input
-      })
-      setInput('');
+    //-----------------Create Item-------------------------------------------
+    const writeToDatabase = () => {
+      const uidd = uid();
+      set(ref(db, `/${auth.currentUser.uid}/${uidd}`), {
+        todo: todo,
+        uidd: uidd
+      });
+      setTodo("");
     };
 
 
-    //Read Item
+    //-----------------Delete Item-------------------------------------------
+    const handleDelete = (uid) => {
+      if (window.confirm("Praješ si odstrániť túto položku?")){
+        remove(ref(db, `/${auth.currentUser.uid}/${uid}`));
+      }
+    };
+
+    //-----------------Check Item-------------------------------------------
+    const handleCheck = (uid) => {
+      if(window.confirm("Praješ si aby táto položka bola braná ako dokončená a odstránila sa?")){
+        remove(ref(db, `/${auth.currentUser.uid}/${uid}`));
+      }
+    };
+
+    //----------------Sign Out button---------------------------------------
+    const navigate = useNavigate();
+
     useEffect(() => {
-      const q = query(collection(db, 'todos'));
-      const unsubscribe = onSnapshot(q, (querySnapshot) => {
-        let todosArr = [];
-        querySnapshot.forEach((doc) => {
-          todosArr.push({...doc.data(),id: doc.id});
-        });
-        setTodos(todosArr)
+      auth.onAuthStateChanged((user) => {
+        if(user){
+          onValue(ref(db, `/${auth.currentUser.uid}`), snapshot => {
+            setTodos([]);
+            const data = snapshot.val();
+            if(data !== null){
+              Object.values(data).map(todo => {
+                setTodos((oldArray) => [...oldArray, todo]);
+              })
+            }
+          });
+        }else if(!user){
+        navigate('/');
+        }
       });
-      return() => unsubscribe();
     }, []);
 
-
-    //Delete Item
-    const DeleteTodo = async(id) => {
-      await deleteDoc(doc(db, 'todos', id))
+    const handleSignOut = () => {
+      signOut(auth).then(() => {
+        navigate('/');
+      }).catch((error) => alert(error.message));
     };
-
-
-    //Check Item
-    const CheckTodo = async(id) => {
-      const confirmation = window.confirm('Praješ si aby bola táto úloha dokončená a následne zmazaná?');
-      if (confirmation) {
-        await deleteDoc(doc(db, 'todos', id));
-      }
-    };
-
-    //Drag and drop
-
-    function handleDragEnd(event) {
-      console.log('Drag end over'); 
-      const {active, over} = event;
-      console.log("Active: " + active.id);
-      console.log("Over: " + over.id);
-
-      if (active.id !== over.id){
-        setTodos((items) => {
-          const activeIndex = items.indexOf((active.id));
-          const overIndex = items.indexOf((over.id));
-          console.log(arrayMove(items, activeIndex, overIndex));
-          return arrayMove(items, activeIndex, overIndex);
-        });
-      }
-    };
+    
 
   return (
-    <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd} >
     <div className="app overflow-hidden">
       {/* NAVBAR */}
       <nav className="navbar bg-dark border-bottom border-body" data-bs-theme="dark">
         <div className="container-fluid">
           <span className="navbar-brand mb-0 h1">ToDo aplikácia</span>
           <form action="#" className='d-flex'>
+            <button className='btn btn-dark bg-gradient btn-sm float-sm-end ' onClick={handleSignOut}><span>Sign Out      </span><ImExit/></button>
           </form>
         </div>
       </nav>
       {/* Page */}
       <div className="row justify-content-center mt-5">
         <div className="col-6" droppable>
-            <form onSubmit={createTodo}>
               <div className="input-group mt-3">
-                  <input value={input} id='Input' onChange={(e) => setInput(e.target.value)} type="text" className='form-control'/>
-                <button className='btn btn-dark waves-effect waves-light'>Add</button>
+                <input value={todo} onChange={(e) => setTodo(e.target.value)} type="text" className='form-control'/>
+                <button  onClick={writeToDatabase} className='btn btn-dark waves-effect waves-light'>Add</button>
               </div>
-            </form>
           </div>
         </div>
       <div className="row m-2 mt-4 justify-content-center">
@@ -97,11 +93,26 @@ function Homepage () {
             <ul className='list-group shadow'>
               <li className='list-group-item'>
                 <h4 className='text-center'>Vytvorené</h4>
-                <SortableContext items={Todos} strategy={verticalListSortingStrategy}>
-                  {Todos.map((todo) =>(
-                      <ToDo key={todo.id} ToDo={todo} deleteTodo={DeleteTodo} checkTodo={CheckTodo}/>
-                    ))}
-                </SortableContext>
+                {
+                  todos.map(todo => (
+                      <div className="card m-3">
+                          <div className="card-body pb-2 pt-2">
+                              <div className="d-flex justify-content-between align-middle">
+                                  <div className="col-auto">
+                                      <button className='btn btn-md'><LuMove/></button>
+                                  </div>
+                                  <div className="col-7 overflow-auto mt-1" style={{height: "43px"}}>
+                                      <h5 className='text-center mb-0'>{todo.todo}</h5> 
+                                  </div>
+                                  <div className="col-auto">
+                                      <button onClick={() => handleDelete(todo.uidd)} className='btn btn-xl'>{<FaTrashCan/>}</button>
+                                      <button onClick={() => handleCheck(todo.uidd)} className='btn btn-xl'>{<FaCheck/>}</button>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  ))
+                }
               </li>
             </ul>
           </div>
@@ -121,7 +132,6 @@ function Homepage () {
         </div>
       </div>
     </div>
-    </DndContext>
   )
 }
 export default Homepage;
