@@ -1,5 +1,5 @@
 import React,{useState, useEffect} from 'react';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged} from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword} from "firebase/auth";
 import { auth } from './firebase';
 import { signInWithGoogle } from './firebase';
 import 'bootstrap/dist/css/bootstrap.css';
@@ -11,12 +11,12 @@ const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [registerInformation, setRegisterInformation] = useState({
-    password: '',
-    confirmPassword: ''
+    password: "",
+    confirmPassword: ""
   });
   const navigate = useNavigate();
 
-  //LogIn
+  //----------------Log in---------------------------------------------
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
       if(user){
@@ -41,7 +41,7 @@ const SignIn = () => {
   };
 
 
-  ///Create Account
+  //----------------Create Account---------------------------------------
 
   const handleRegister = (e) => {
     if(registerInformation.password !== registerInformation.confirmPassword){
@@ -49,9 +49,8 @@ const SignIn = () => {
       return;
     };
     createUserWithEmailAndPassword(auth, registerInformation.email, registerInformation.password).then(()=>{
-      localStorage.setItem('email', registerInformation.email);
       navigate('/homepage');
-    }).catch((error) => alert(error.message));
+    }).catch((error) => alert("Heslo musí obsahovať aspoň 6 znakov"));
   };
 
   return (
@@ -63,13 +62,13 @@ const SignIn = () => {
                 <div className="card">
                   <div className="card-body p-4">
                     <div className="text-center mb-4">
-                      <h1>Treba Zadať nadpis SEM !!!!</h1>
+                      <h1>Správca úloh</h1>
                     </div>
                     <div className="row">
                       <div className="col-lg-6">
                         <div className="p-sm-3">
                           {/*Nadpis -> LogIn*/}
-                          <h4>Log In</h4>
+                          <h4>Prihlás sa</h4>
                           <p className='mb-3'>Zadaj email a heslo na prihlásenie.</p>
                             <div className="mb-3">
                               <label htmlFor="emailaddress" className='form-label'>Email address</label>
@@ -86,7 +85,7 @@ const SignIn = () => {
                       </div>
                       <div className="col-lg-6">
                         <div className="p-sm-3">
-                          <h4>Sign Up</h4>
+                          <h4>Registruj sa</h4>
                           <p className='mb-3'>Vytvor si účet. Bude to trvať menej ako minútu.</p>
                             <div className="mb-3">
                               <label htmlFor="emailaddress2" className='form-label'>Email address</label>

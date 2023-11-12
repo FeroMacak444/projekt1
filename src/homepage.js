@@ -3,9 +3,9 @@ import 'bootstrap/dist/css/bootstrap.css';
 import{ auth, db } from './firebase';
 import { signOut } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
-import { ImExit } from 'react-icons/im';
+import { PiSignOutBold } from 'react-icons/pi';
 import { uid } from 'uid';
-import { set, ref, onValue, remove, update } from 'firebase/database';
+import { set, ref, onValue, remove } from 'firebase/database';
 import {FaTrashCan} from 'react-icons/fa6';
 import {LuMove} from 'react-icons/lu';
 import {FaCheck} from 'react-icons/fa6';
@@ -24,7 +24,6 @@ function Homepage () {
       });
       setTodo("");
     };
-
 
     //-----------------Delete Item-------------------------------------------
     const handleDelete = (uid) => {
@@ -75,19 +74,19 @@ function Homepage () {
         <div className="container-fluid">
           <span className="navbar-brand mb-0 h1">ToDo aplikácia</span>
           <form action="#" className='d-flex'>
-            <button className='btn btn-dark bg-gradient btn-sm float-sm-end ' onClick={handleSignOut}><span>Sign Out      </span><ImExit/></button>
+            <button className='btn btn-dark bg-gradient btn-sm float-sm-end ' onClick={handleSignOut}><span className='pe-2'>Sign Out</span><PiSignOutBold/></button>
           </form>
         </div>
       </nav>
       {/* Page */}
       <div className="row justify-content-center mt-5">
         <div className="col-6" droppable>
-              <div className="input-group mt-3">
-                <input value={todo} onChange={(e) => setTodo(e.target.value)} type="text" className='form-control'/>
-                <button  onClick={writeToDatabase} className='btn btn-dark waves-effect waves-light'>Add</button>
-              </div>
-          </div>
+            <div className="input-group mt-3">
+              <input value={todo} onChange={(e) => setTodo(e.target.value)} type="text" className='form-control'/>
+              <button onClick={writeToDatabase} className='btn btn-dark waves-effect waves-light'>Add</button>
+            </div>
         </div>
+      </div>
       <div className="row m-2 mt-4 justify-content-center">
         <div className="col-4">
             <ul className='list-group shadow'>
@@ -99,7 +98,7 @@ function Homepage () {
                           <div className="card-body pb-2 pt-2">
                               <div className="d-flex justify-content-between align-middle">
                                   <div className="col-auto">
-                                      <button className='btn btn-md'><LuMove/></button>
+                                      <button className='btn btn-md'>{<LuMove/>}</button>
                                   </div>
                                   <div className="col-7 overflow-auto mt-1" style={{height: "43px"}}>
                                       <h5 className='text-center mb-0'>{todo.todo}</h5> 
