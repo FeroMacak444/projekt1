@@ -7,38 +7,76 @@ import { PiSignOutBold } from 'react-icons/pi';
 import { uid } from 'uid';
 import { set, ref, onValue, remove } from 'firebase/database';
 import {FaTrashCan} from 'react-icons/fa6';
-import {LuMove} from 'react-icons/lu';
 import {FaCheck} from 'react-icons/fa6';
+import { toast, Toaster } from 'react-hot-toast';
 
-
-function Homepage () {
+function Homepage (props) {
   const [todo, setTodo] = useState("");
   const [todos, setTodos] = useState([]);
 
     //-----------------Create Item-------------------------------------------
     const writeToDatabase = () => {
-      const uidd = uid();
-      set(ref(db, `/${auth.currentUser.uid}/${uidd}`), {
-        todo: todo,
-        uidd: uidd
-      });
-      setTodo("");
+      if (todo.trim() === "") {
+        toast('Nemôžeš pridať prázdnu položku',
+          {
+            icon: '⛔',
+            style: {
+              borderRadius: '10px',
+              background: '#333',
+              color: '#fff',
+            },
+          }
+        );
+        return;
+      } else if(todo.trim() !== ""){
+        toast('Položka bola pridaná',
+          {
+            icon: '✅',
+            style: {
+              borderRadius: '10px',
+              background: '#333',
+              color: '#fff',
+            },
+          }
+        );
+        const uidd = uid();
+        set(ref(db, `/${auth.currentUser.uid}/${uidd}`), {
+          todo: todo,
+          uidd: uidd
+        });
+        setTodo("");
+      }
     };
 
     //-----------------Delete Item-------------------------------------------
     const handleDelete = (uid) => {
-      if (window.confirm("Praješ si odstrániť túto položku?")){
-        remove(ref(db, `/${auth.currentUser.uid}/${uid}`));
-      }
+      toast('Položka bola odstránená',
+          {
+            icon: '🗑️',
+            style: {
+              borderRadius: '10px',
+              background: '#333',
+              color: '#fff',
+            },
+          }
+        );
+      remove(ref(db, `/${auth.currentUser.uid}/${uid}`));
     };
 
     //-----------------Check Item-------------------------------------------
     const handleCheck = (uid) => {
-      if(window.confirm("Praješ si aby táto položka bola braná ako dokončená a odstránila sa?")){
-        remove(ref(db, `/${auth.currentUser.uid}/${uid}`));
-      }
+      toast('Položka bola označená ako dokončená a následne odstránená',
+          {
+            icon: '✅',
+            style: {
+              borderRadius: '10px',
+              background: '#333',
+              color: '#fff',
+            },
+          }
+        );
+      remove(ref(db, `/${auth.currentUser.uid}/${uid}`));
     };
-
     //----------------Sign Out button---------------------------------------
     const navigate = useNavigate();
 
@@ -69,6 +107,7 @@ function Homepage () {
 
   return (
     <div className="app overflow-hidden">
+      <div><Toaster position="top-center" reverseOrder={true}/></div>
       {/* NAVBAR */}
       <nav className="navbar bg-dark border-bottom border-body" data-bs-theme="dark">
         <div className="container-fluid">
@@ -80,54 +119,32 @@ function Homepage () {
       </nav>
       {/* Page */}
       <div className="row justify-content-center mt-5">
-        <div className="col-6" droppable>
-            <div className="input-group mt-3">
-              <input value={todo} onChange={(e) => setTodo(e.target.value)} type="text" className='form-control'/>
-              <button onClick={writeToDatabase} className='btn btn-dark waves-effect waves-light'>Add</button>
-            </div>
-        </div>
-      </div>
-      <div className="row m-2 mt-4 justify-content-center">
-        <div className="col-4">
-            <ul className='list-group shadow'>
-              <li className='list-group-item'>
-                <h4 className='text-center'>Vytvorené</h4>
-                {
-                  todos.map(todo => (
-                      <div className="card m-3">
-                          <div className="card-body pb-2 pt-2">
-                              <div className="d-flex justify-content-between align-middle">
-                                  <div className="col-auto">
-                                      <button className='btn btn-md'>{<LuMove/>}</button>
-                                  </div>
-                                  <div className="col-7 overflow-auto mt-1" style={{height: "43px"}}>
-                                      <h5 className='text-center mb-0'>{todo.todo}</h5> 
-                                  </div>
-                                  <div className="col-auto">
-                                      <button onClick={() => handleDelete(todo.uidd)} className='btn btn-xl'>{<FaTrashCan/>}</button>
-                                      <button onClick={() => handleCheck(todo.uidd)} className='btn btn-xl'>{<FaCheck/>}</button>
-                                  </div>
+        <div className="col-6">
+          <div className="card">
+            <div className="card-body">
+              <div className="input-group mt-3">
+                <input value={todo} onChange={(e) => setTodo(e.target.value)} type="text" className='form-control'/>
+                <button onClick={writeToDatabase} className='btn btn-dark waves-effect waves-light'>Add</button>
+              </div>
+              {todos.map(todo => (
+                    <div className="card m-3">
+                        <div className="card-body pb-2 pt-2">
+                            <div className="row g3">
+                              <div className='col-2'/>
+                              <div className="col-7 overflow-auto mt-1" style={{height: "43px"}}>
+                                  <h5 className='text-center'>{todo.todo}</h5> 
                               </div>
-                          </div>
-                      </div>
-                  ))
-                }
-              </li>
-            </ul>
+                              <div className='col-1'/>
+                              <div className="col-auto">
+                                  <button onClick={() => handleDelete(todo.uidd)} className='btn btn-xl'>{<FaTrashCan/>}</button>
+                                  <button onClick={() => handleCheck(todo.uidd)} className='btn btn-xl'>{<FaCheck/>}</button>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+                  ))}
+            </div>
           </div>
-          <div className="col-4">
-            <ul className='list-group shadow'>
-              <li className='list-group-item'>
-                <h4 className='text-center'>Prebiehajúce</h4>
-              </li>
-            </ul>
-          </div>
-          <div className="col-4">
-            <ul className='list-group shadow'>
-              <li className='list-group-item'>
-                <h4 className='text-center'>Dokončené</h4>
-              </li>
-            </ul>
         </div>
       </div>
     </div>

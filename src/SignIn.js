@@ -5,6 +5,7 @@ import { signInWithGoogle } from './firebase';
 import 'bootstrap/dist/css/bootstrap.css';
 import {FaGoogle} from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import { toast, Toaster } from 'react-hot-toast';
 
 const SignIn = () => {
 
@@ -37,7 +38,15 @@ const SignIn = () => {
     signInWithEmailAndPassword(auth, email, password).then(()=>{
       localStorage.setItem('email', email);
       navigate('/homepage');
-    }).catch((error) => alert("Nesprávne meno alebo heslo"));
+    }).catch((error) => toast("Nesprávne prihlasovacie údaje",
+    {
+      icon: '⛔',
+      style: {
+        borderRadius: '10px',
+        background: '#333',
+        color: '#fff',
+      },
+    }));
   };
 
 
@@ -45,16 +54,34 @@ const SignIn = () => {
 
   const handleRegister = (e) => {
     if(registerInformation.password !== registerInformation.confirmPassword){
-      alert('Heslá sa nezhodujú');
+      toast('Heslá sa nezhodujú',
+      {
+        icon: '⛔',
+        style: {
+          borderRadius: '10px',
+          background: '#333',
+          color: '#fff',
+        },
+      }
+    );
       return;
     };
     createUserWithEmailAndPassword(auth, registerInformation.email, registerInformation.password).then(()=>{
       navigate('/homepage');
-    }).catch((error) => alert("Heslo musí obsahovať aspoň 6 znakov"));
+    }).catch((error) => toast("Heslo musí obsahovať aspoň 6 znakov",
+      {
+        icon: '⛔',
+        style: {
+          borderRadius: '10px',
+          background: '#333',
+          color: '#fff',
+        },
+      }));
   };
 
   return (
-      <div className="App dark">
+      <div className="App">
+        <Toaster position="top-center" reverseOrder={false}/>
         <div className="account-pages mt-5 mb-5">
           <div className="container">
             <div className="row justify-content-center">
