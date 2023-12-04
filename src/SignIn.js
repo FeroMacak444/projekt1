@@ -37,6 +37,7 @@ const SignIn = () => {
   const handleSignIn = (a) => {
     signInWithEmailAndPassword(auth, email, password).then(()=>{
       localStorage.setItem('email', email);
+      localStorage.setItem('password', password);
       navigate('/homepage');
     }).catch((error) => toast("Nesprávne prihlasovacie údaje",
     {
@@ -56,7 +57,7 @@ const SignIn = () => {
     if(registerInformation.password !== registerInformation.confirmPassword){
       toast('Heslá sa nezhodujú',
       {
-        icon: '⛔',
+        icon: '❗',
         style: {
           borderRadius: '10px',
           background: '#333',
@@ -68,6 +69,8 @@ const SignIn = () => {
     };
     createUserWithEmailAndPassword(auth, registerInformation.email, registerInformation.password).then(()=>{
       navigate('/homepage');
+      localStorage.setItem('email', email);
+      localStorage.setItem('password', password);
     }).catch((error) => toast("Heslo musí obsahovať aspoň 6 znakov",
       {
         icon: '⛔',
