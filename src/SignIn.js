@@ -6,6 +6,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import {FaGoogle} from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { toast, Toaster } from 'react-hot-toast';
+import { FaRegCheckCircle } from "react-icons/fa";
 
 const SignIn = () => {
 
@@ -69,8 +70,8 @@ const SignIn = () => {
     };
     createUserWithEmailAndPassword(auth, registerInformation.email, registerInformation.password).then(()=>{
       navigate('/homepage');
-      localStorage.setItem('email', email);
-      localStorage.setItem('password', password);
+      localStorage.setItem('email', registerInformation.email);
+      localStorage.setItem('password', registerInformation.password);
     }).catch((error) => toast("Heslo musí obsahovať aspoň 6 znakov",
       {
         icon: '⛔',
@@ -92,7 +93,7 @@ const SignIn = () => {
                 <div className="card">
                   <div className="card-body p-4">
                     <div className="text-center mb-4">
-                      <h1>Správca úloh</h1>
+                      <h1>Todo App   <FaRegCheckCircle/></h1>
                     </div>
                     <div className="row">
                       <div className="col-lg-6">
@@ -109,7 +110,7 @@ const SignIn = () => {
                               <input type="password" id='password' placeholder='Zadaj heslo' value={password} className='form-control' required onChange={handlePasswordChange}/>
                             </div>
                             <div className="mb-3">
-                              <button className='btn btn-dark bg-gradient btn-sm  float-sm-end' onClick={handleSignIn}>Log In</button>
+                              <button className='btn btn-dark btn-sm  float-sm-end' onClick={handleSignIn}>Log In</button>
                             </div>
                         </div>
                       </div>
@@ -131,7 +132,7 @@ const SignIn = () => {
                             </div>
                             <div className="mb-3">
                               <button onClick={ signInWithGoogle } className='btn btn-sm waves-effect waves-light rounded-pill'><FaGoogle/></button>
-                              <button className='btn btn-dark bg-gradient btn-sm float-sm-end' onClick={handleRegister}>Sign Up</button>
+                              <button className='btn btn-dark btn-sm float-sm-end' onClick={handleRegister}>Sign Up</button>
                             </div>  
                         </div>
                       </div>

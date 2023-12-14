@@ -14,6 +14,7 @@ import { FiAlignJustify } from "react-icons/fi";
 import { FaRegUser } from "react-icons/fa";
 import {FaTrashCan} from 'react-icons/fa6';
 import {FaCheck} from 'react-icons/fa6';
+import { FaRegCheckCircle } from "react-icons/fa";
 
 function Homepage (props) {
   const [todo, setTodo] = useState("");
@@ -52,14 +53,6 @@ function Homepage (props) {
         setTodo("");
       }
     };
-
-    //-----------------Index of Item-------------------------------------------
-
-    const indexOfItem = (uid) => {
-      const index = todos.findIndex((todo) => todo.uidd === uid);
-      return index;
-    };
-
     //-----------------Delete Item-------------------------------------------
     const handleDelete = (uid) => {
       toast('Položka bola odstránená',
@@ -131,11 +124,11 @@ function Homepage (props) {
     <div className="app overflow-hidden">
       <div><Toaster position="top-center" reverseOrder={true}/></div>
       {/* NAVBAR */}
-      <nav className="navbar bg-dark border-bottom border-body" data-bs-theme="dark">
+      <nav className="navbar bg-dark border-bottom border-body p-0" data-bs-theme="dark">
         <div className="container-fluid">
-          <span className="navbar-brand mb-0 h1"></span>
+          <span className="navbar-brand mb-0 h1">Todo App   <FaRegCheckCircle/></span>
           <form action="#">
-          <Dropdown>
+          <Dropdown className='btn'>
             <Dropdown.Toggle variant="dark" id="dropdown-basic">
               <FiAlignJustify/>
             </Dropdown.Toggle>
@@ -154,11 +147,11 @@ function Homepage (props) {
         </Modal.Header>
         <Modal.Body>
           <Form>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+            <Form.Group className="mb-3" controlId="ControlInput1">
               <Form.Label>Dispaly name:</Form.Label>
               <Form.Label><span className='ms-2 fw-bold'>{email}{googleEmail}</span></Form.Label>
             </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+            <Form.Group className="mb-3" controlId="ControlInput1">
               <Form.Label>Password:</Form.Label>
               <Form.Label>
                   {password ? <span className='ms-2 fw-bold'>{password}</span> : <span className='ms-2 fw-bold text-danger'>Nemáš prístup k heslu, lebo si sa prihlásil pomocou Google účtu</span>}
@@ -169,7 +162,7 @@ function Homepage (props) {
       </Modal>
       {/* Page */}
       <div className="row justify-content-center mt-5">
-        <div className="col-6">
+        <div className="col-md-6">
           <div className="card">
             <div className="card-body">
               <form action="#" onSubmit={writeToDatabase}>
@@ -182,10 +175,10 @@ function Homepage (props) {
                 <div className="card m-3">
                     <div className="card-body pb-2 pt-2">
                       <div className="row justify-content-between" style={{height: "43px"}}>
-                            <div className="col-8 overflow-auto mt-2" style={{height: "43px"}}>
+                            <div className="col-8 overflow-auto mt-2 pe-0" style={{height: "43px"}}>
                                 <h5>{todo.todo}</h5> 
                             </div>
-                          <div className="col-auto position-relative" style={{height: "43px"}}>
+                          <div className="col-auto position-absolute top-50 end-0 translate-middle-y" style={{height: "43px"}}>
                               <button onClick={() => handleDelete(todo.uidd)} className='btn btn-xl'>{<FaTrashCan/>}</button>
                               <button onClick={() => handleCheck(todo.uidd)} className='btn btn-xl'>{<FaCheck/>}</button>
                           </div>
