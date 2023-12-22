@@ -3,10 +3,9 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword} from "fireb
 import { auth } from './firebase';
 import { signInWithGoogle } from './firebase';
 import 'bootstrap/dist/css/bootstrap.css';
-import {FaGoogle} from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { toast, Toaster } from 'react-hot-toast';
-import { FaRegCheckCircle } from "react-icons/fa";
+import { FaRegCheckCircle, FaGoogle } from "react-icons/fa";
 
 const SignIn = () => {
 

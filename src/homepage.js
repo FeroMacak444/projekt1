@@ -11,10 +11,8 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import { FiAlignJustify } from "react-icons/fi";
-import { FaRegUser } from "react-icons/fa";
-import {FaTrashCan} from 'react-icons/fa6';
-import {FaCheck} from 'react-icons/fa6';
-import { FaRegCheckCircle } from "react-icons/fa";
+import { FaRegUser, FaRegCheckCircle } from "react-icons/fa";
+import {FaTrashCan, FaCheck} from 'react-icons/fa6';
 
 function Homepage (props) {
   const [todo, setTodo] = useState("");
