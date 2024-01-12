@@ -150,10 +150,10 @@ function Homepage (props) {
               <Form.Label><span className='ms-2 fw-bold'>{email}{googleEmail}</span></Form.Label>
             </Form.Group>
             <Form.Group className="mb-3" controlId="ControlInput1">
-              {/* <Form.Label>Password:</Form.Label>
+              <Form.Label>Password:</Form.Label>
               <Form.Label>
                   {password ? <span className='ms-2 fw-bold'>{password}</span> : <span className='ms-2 fw-bold text-danger'>Nemáš prístup k heslu, lebo si sa prihlásil pomocou Google účtu</span>}
-              </Form.Label> */}
+              </Form.Label>
             </Form.Group>
           </Form>
         </Modal.Body>
