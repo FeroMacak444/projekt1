@@ -116,7 +116,7 @@ function Homepage (props) {
     const handleShow = () => setShow(true);  
     const email = localStorage.getItem('email');
     const googleEmail = localStorage.getItem('googleEmail');
-    const password = localStorage.getItem('password');
+  const password = localStorage.getItem('password');
 
   return (
     <div className="app overflow-hidden">
@@ -150,10 +150,10 @@ function Homepage (props) {
               <Form.Label><span className='ms-2 fw-bold'>{email}{googleEmail}</span></Form.Label>
             </Form.Group>
             <Form.Group className="mb-3" controlId="ControlInput1">
-              <Form.Label>Password:</Form.Label>
+              {/* <Form.Label>Password:</Form.Label>
               <Form.Label>
                   {password ? <span className='ms-2 fw-bold'>{password}</span> : <span className='ms-2 fw-bold text-danger'>Nemáš prístup k heslu, lebo si sa prihlásil pomocou Google účtu</span>}
-              </Form.Label>
+              </Form.Label> */}
             </Form.Group>
           </Form>
         </Modal.Body>
@@ -177,8 +177,8 @@ function Homepage (props) {
                                 <h5>{todo.todo}</h5> 
                             </div>
                           <div className="col-auto position-absolute top-50 end-0 translate-middle-y" style={{height: "43px"}}>
-                              <button onClick={() => handleDelete(todo.uidd)} className='btn btn-xl'>{<FaTrashCan/>}</button>
-                              <button onClick={() => handleCheck(todo.uidd)} className='btn btn-xl'>{<FaCheck/>}</button>
+                              <button onClick={() => handleDelete(todo.uidd)} className='btn btn-xl' placeholder='Delete'>{<FaTrashCan/>}</button>
+                              <button onClick={() => handleCheck(todo.uidd)} className='btn btn-xl' placeholder='Mark as finnished'>{<FaCheck/>}</button>
                           </div>
                         </div>
                     </div>
